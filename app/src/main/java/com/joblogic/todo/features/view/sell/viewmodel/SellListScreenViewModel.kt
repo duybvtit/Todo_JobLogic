@@ -1,8 +1,9 @@
-package com.joblogic.todo.features.view.sell
+package com.joblogic.todo.features.view.sell.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.joblogic.todo.domain.usecases.product.GetToSellListingUseCase
+import com.joblogic.todo.features.view.sell.model.ToSellDataState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,6 +22,13 @@ class SellListScreenViewModel @Inject constructor(
     private val _toSellDataState = MutableStateFlow(ToSellDataState())
     val toSellDataState = _toSellDataState.asStateFlow()
 
+    fun resetState() {
+        _toSellDataState.update { state ->
+            state.copy(
+                isFetchingLocal = false
+            )
+        }
+    }
 
     fun getItemToSell() {
         viewModelScope.launch {
@@ -28,7 +36,8 @@ class SellListScreenViewModel @Inject constructor(
                 withContext(Dispatchers.Main) {
                     _toSellDataState.update { state ->
                         state.copy(
-                            items = it
+                            items = it,
+                            isFetchingLocal = true
                         )
                     }
                 }
