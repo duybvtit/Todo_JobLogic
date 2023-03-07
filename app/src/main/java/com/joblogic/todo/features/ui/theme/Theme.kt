@@ -1,4 +1,4 @@
-package com.joblogic.todo.ui.theme
+package com.joblogic.todo.features.ui.theme
 
 import android.app.Activity
 import android.os.Build

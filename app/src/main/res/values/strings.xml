@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Todo</string>
+    <string name="preference_file_key">com.joblogic.todo.PREFERENCE_FILE_KEY</string>
+    <string name="call_list">Call List</string>
+    <string name="buy_list">Buy List</string>
+    <string name="sell_list">Sell List</string>
 </resources>

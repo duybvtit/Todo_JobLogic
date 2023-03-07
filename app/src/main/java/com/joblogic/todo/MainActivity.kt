@@ -3,44 +3,33 @@ package com.joblogic.todo
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import com.joblogic.todo.ui.theme.TodoTheme
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.material.ExperimentalMaterialApi
+import com.google.accompanist.pager.ExperimentalPagerApi
+import com.joblogic.todo.features.root.AppNavigationComponent
+import com.joblogic.todo.features.root.AppNavigator
+import com.joblogic.todo.features.root.NavTarget
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
+@OptIn(
+    ExperimentalPagerApi::class,
+    ExperimentalAnimationApi::class,
+    ExperimentalMaterialApi::class
+)
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    @Inject
+    lateinit var appNavigator: AppNavigator
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            TodoTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
-                    Greeting("Android")
-                }
-            }
+            AppNavigationComponent(
+                startDestination = appNavigator.getRoute(NavTarget.HomeScreen),
+                navigator = appNavigator
+            )
         }
-    }
-}
-
-@Composable
-fun Greeting(
-    name: String,
-    modifier: Modifier = Modifier
-) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    TodoTheme {
-        Greeting("Android")
     }
 }
