@@ -57,8 +57,6 @@ android {
 
 dependencies {
 
-    implementation(libs.material)
-    //basic core ktx gradle
     implementation(libs.bundles.androidCore)
 
     // Hilt
