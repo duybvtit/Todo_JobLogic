@@ -8,6 +8,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -35,6 +37,8 @@ fun BuyListScreen(
         buyViewModel.toBuyDataState
     }.collectAsStateWithLifecycle()
 
+    val snackbarHostState = remember { SnackbarHostState() }
+
     val isShowLoading = remember { mutableStateOf(false) }
 
     LaunchedEffect(true) {
@@ -46,6 +50,15 @@ fun BuyListScreen(
         if (toBuyDataState.items.isNotEmpty()) {
             isShowLoading.value = false
         }
+
+        if (toBuyDataState.error.isNotEmpty()) {
+            isShowLoading.value = false
+
+            //show message
+            snackbarHostState.showSnackbar(toBuyDataState.error)
+        }
+
+        buyViewModel.resetState()
     }
 
     fun popBackStack() {
@@ -57,6 +70,9 @@ fun BuyListScreen(
     }
 
     Scaffold(
+        snackbarHost = {
+            SnackbarHost(hostState = snackbarHostState)
+        },
         topBar = {
             IncludeTopAppBar(title = stringResource(id = R.string.buy_list),
                 onBackClick = { popBackStack() })

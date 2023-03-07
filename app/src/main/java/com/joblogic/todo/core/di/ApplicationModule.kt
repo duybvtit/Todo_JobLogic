@@ -13,14 +13,15 @@ import com.joblogic.todo.core.functional.FlowCallAdapterFactory
 import com.joblogic.todo.data.cache.Keys
 import com.joblogic.todo.data.database.ProductDao
 import com.joblogic.todo.data.database.TodoDatabase
+import com.joblogic.todo.data.repositories.ProductRepository
 import com.joblogic.todo.domain.network.ServiceInterceptor
+import com.joblogic.todo.domain.repositories.IProductRepository
 import com.localebro.okhttpprofiler.OkHttpProfilerInterceptor
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import kotlinx.coroutines.FlowPreview
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -40,8 +41,7 @@ class ApplicationModule {
     @Provides
     @Singleton
     fun provideRetrofit(
-        gson: Gson,
-        sharedPreferences: SharedPreferences
+        gson: Gson
     ): Retrofit {
         return Retrofit.Builder()
             .baseUrl(Keys.baseUrl())
@@ -76,10 +76,9 @@ class ApplicationModule {
             .writeTimeout(30, TimeUnit.SECONDS)
             .callTimeout(30, TimeUnit.SECONDS)
         okHttpClientBuilder.addInterceptor(
-            ServiceInterceptor(
-            )
+            ServiceInterceptor()
         )
-        if (BuildConfig.DEBUG) {
+        if (com.joblogic.todo.BuildConfig.DEBUG) {
             val loggingInterceptor =
                 HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
             okHttpClientBuilder.addInterceptor(loggingInterceptor)
@@ -102,8 +101,8 @@ class ApplicationModule {
     fun provideProductDao(db: TodoDatabase): ProductDao {
         return db.productDao()
     }
-//
-//    @Provides
-//    @Singleton
-//    fun provideJourneyRepository(dataSource: JourneyRepository): IJourneyRepository = dataSource
+
+    @Provides
+    @Singleton
+    fun provideProductRepository(dataSource: ProductRepository): IProductRepository = dataSource
 }

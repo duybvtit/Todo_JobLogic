@@ -24,6 +24,14 @@ class BuyViewModel @Inject constructor(
     private val _toBuyDataState = MutableStateFlow(ToBuyDataState())
     val toBuyDataState = _toBuyDataState.asStateFlow()
 
+    fun resetState(){
+        _toBuyDataState.update { state ->
+            state.copy(
+                error = ""
+            )
+        }
+    }
+
     fun getBuyListing() {
         viewModelScope.launch {
             getToBuyListingUseCase.invoke(null).flowOn(Dispatchers.IO).collect {

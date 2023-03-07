@@ -8,6 +8,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -30,10 +31,11 @@ fun CallListingScreen(
     appNavigator: AppNavigator,
     callViewModel: CallViewModel = hiltViewModel()
 ) {
-
     val toCallDataState by remember(callViewModel) {
         callViewModel.toCallDataState
     }.collectAsStateWithLifecycle()
+
+    val snackBarHostState = remember { SnackbarHostState() }
 
     val isShowLoading = remember { mutableStateOf(false) }
 
@@ -46,6 +48,15 @@ fun CallListingScreen(
         if (toCallDataState.items.isNotEmpty()) {
             isShowLoading.value = false
         }
+
+        if (toCallDataState.error.isNotEmpty()) {
+            isShowLoading.value = false
+
+            //show error
+            snackBarHostState.showSnackbar(toCallDataState.error)
+        }
+
+        callViewModel.resetState()
     }
 
     fun popBackStack() {
@@ -57,10 +68,12 @@ fun CallListingScreen(
     }
 
     Scaffold(
+        snackbarHost = { androidx.compose.material3.SnackbarHost(snackBarHostState) },
         topBar = {
             IncludeTopAppBar(title = stringResource(id = R.string.call_list),
                 onBackClick = { popBackStack() })
-        }) { paddingValues ->
+        },
+    ) { paddingValues ->
 
         LazyColumn(modifier = Modifier.padding(paddingValues)) {
             items(toCallDataState.items) {

@@ -21,6 +21,7 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
 import retrofit2.HttpException
+import java.net.SocketTimeoutException
 import javax.inject.Inject
 
 @OptIn(FlowPreview::class)
@@ -74,7 +75,7 @@ class ProductRepository @Inject constructor(
             var message = ""
             var errorCode = 400
 
-            when (throwable) {
+            when (throwable){
                 is HttpException -> {
                     errorBody =
                         throwable.response()?.errorBody()?.string()

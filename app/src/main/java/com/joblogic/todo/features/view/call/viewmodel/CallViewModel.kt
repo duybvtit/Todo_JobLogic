@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.joblogic.todo.domain.entities.AppResult
 import com.joblogic.todo.domain.usecases.product.GetToCallListingUseCase
-import com.joblogic.todo.features.view.buy.model.ToBuyDataState
 import com.joblogic.todo.features.view.call.model.ToCallDataState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -21,6 +20,14 @@ class CallViewModel @Inject constructor(
 ) : ViewModel() {
     private val _toCallDataState = MutableStateFlow(ToCallDataState())
     val toCallDataState = _toCallDataState.asStateFlow()
+
+    fun resetState() {
+        _toCallDataState.update { state ->
+            state.copy(
+                error = ""
+            )
+        }
+    }
 
     fun getCallListing() {
         viewModelScope.launch {
@@ -45,6 +52,4 @@ class CallViewModel @Inject constructor(
             }
         }
     }
-
-
 }
